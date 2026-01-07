@@ -16,16 +16,17 @@ docker compose up -d
 
 # 等待服務啟動
 echo "⏳ 等待服務啟動..."
-sleep 10
+sleep 5
+
+# 設定權限 (這裡使用 sudo 來確保主機能修改 Docker 產生的檔案)
+echo "🔐 設定檔案權限..."
+sudo chown -R $USER:$USER .
+docker compose exec php chown -R www-data:www-data writable
+docker compose exec php chmod -R 775 writable
 
 # 安裝 Composer 依賴
 echo "📦 安裝 Composer 依賴..."
-docker compose exec php composer install
-
-# 設定權限
-echo "🔐 設定檔案權限..."
-docker compose exec php chown -R www-data:www-data writable/
-docker compose exec php chmod -R 775 writable/
+docker compose exec php composer install --no-interaction
 
 echo ""
 echo "✅ 專案啟動完成！"
