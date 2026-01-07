@@ -39,14 +39,16 @@ docker compose up -d
 echo "⏳ 等待 MySQL 啟動 (15秒)..."
 sleep 15
 
-# Step 5: 在容器內安裝 Composer 依賴
+# Step 5: 在容器內安裝 Composer 依賴 (以 root 執行避免權限問題)
 echo "📦 [5/6] 安裝 Composer 依賴 (這可能需要 1-2 分鐘)..."
-docker compose exec -T php composer install --no-interaction --optimize-autoloader
+docker compose exec -T -u root php composer install --no-interaction --optimize-autoloader
 
-# Step 6: 修復容器內的 writable 權限
-echo "🔐 [6/6] 修復容器內 writable 權限..."
+# Step 6: 修復容器內的權限
+echo "🔐 [6/6] 修復容器內權限..."
 docker compose exec -T -u root php chown -R www-data:www-data /var/www/html/writable
 docker compose exec -T -u root php chmod -R 775 /var/www/html/writable
+docker compose exec -T -u root php chown -R www-data:www-data /var/www/html/vendor
+docker compose exec -T -u root php chown www-data:www-data /var/www/html/composer.lock 2>/dev/null || true
 
 # 驗證
 echo ""
