@@ -194,4 +194,42 @@ class ShoesController extends ResourceController
             ], 500);
         }
     }
+
+    /**
+     * 除錯用：顯示資料庫連線資訊
+     * GET /api/shoes/db-info
+     */
+    public function dbInfo()
+    {
+        $db = \Config\Database::connect();
+        $config = config('Database');
+
+        $info = [
+            'hostname' => $config->default['hostname'] ?? 'not set',
+            'database' => $config->default['database'] ?? 'not set',
+            'username' => $config->default['username'] ?? 'not set',
+            'password' => str_repeat('*', strlen($config->default['password'] ?? '')),
+            'port' => $config->default['port'] ?? 'not set',
+            'DBDriver' => $config->default['DBDriver'] ?? 'not set',
+        ];
+
+        // 測試連線
+        try {
+            $db->connect();
+            $info['connection_status'] = 'SUCCESS';
+            $info['server_info'] = $db->getVersion();
+        } catch (\Exception $e) {
+            $info['connection_status'] = 'FAILED';
+            $info['error'] = $e->getMessage();
+        }
+
+        return $this->respond([
+            'success' => true,
+            'db_info' => $info,
+            'env' => [
+                'CI_ENVIRONMENT' => env('CI_ENVIRONMENT', 'not set'),
+                'app.baseURL' => env('app.baseURL', 'not set'),
+            ]
+        ]);
+    }
 }

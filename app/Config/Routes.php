@@ -16,4 +16,7 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes)
 
     // 相容舊版 AJAX 端點
     $routes->get('shoes/table-content', 'ShoesController::tableContent');
+
+    // 除錯用：查看 DB 連線資訊
+    $routes->get('shoes/db-info', 'ShoesController::dbInfo');
 });
