@@ -19,7 +19,7 @@ jobs:
         port: ${{ secrets.VPS_PORT }}
         script: |
           cd /home/jarvis/project/bonus/official/shoes  # Change this to your actual project path on VPS
-          git pull origin main
+          git pull origin master
           
           # Optional: Run composer install if you have dependencies to update
           # docker compose exec -T php composer install --no-dev --optimize-autoloader
