@@ -347,7 +347,8 @@
                 const delay = index * 30;
                 
                 const row = $(`
-                    <tr class="hover:bg-gray-50 transition-colors" sbase font-medium text-gray-900">
+                    <tr class="hover:bg-gray-50 transition-colors" style="animation: fadeIn 0.3s ease ${delay}ms both;">
+                        <td class="px-6 py-4 whitespace-nowrap text-lg font-medium text-gray-900">
                             ${item.id || '-'}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
@@ -358,23 +359,22 @@
                                      onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22${IMG_SIZE}%22 height=%22${IMG_SIZE}%22%3E%3Crect fill=%22%23e5e7eb%22 width=%22${IMG_SIZE}%22 height=%22${IMG_SIZE}%22/%3E%3Ctext fill=%22%239ca3af%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 font-family=%22sans-serif%22 font-size=%2212%22%3E無圖片%3C/text%3E%3C/svg%3E';">
                             </div>
                         </td>
-                        <td class="px-6 py-4 text-base text-gray-900">
+                        <td class="px-6 py-4 text-lg text-gray-900">
                             <div class="font-medium">${item.eng_name || '-'}</div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-base text-gray-600 font-mono">
+                        <td class="px-6 py-4 whitespace-nowrap text-lg text-gray-600 font-mono">
                             ${item.code || '-'}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-base text-gray-900">
+                        <td class="px-6 py-4 whitespace-nowrap text-lg text-gray-900">
                             ${formatPrice(item.hope_price)}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-base font-semibold text-gray-900">
+                        <td class="px-6 py-4 whitespace-nowrap text-lg font-semibold text-gray-900">
                             ${formatPrice(item.price)}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-base text-gray-600">
+                        <td class="px-6 py-4 whitespace-nowrap text-lg text-gray-600">
                             ${item.point || '-'}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-base
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        <td class="px-6 py-4 text-lg text-gray-600 max-w-xs break-words">
                             ${item.size || '-'}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
