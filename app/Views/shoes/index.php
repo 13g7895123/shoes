@@ -13,6 +13,16 @@
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     
     <style>
+        /* 全域字體放大 */
+        body {
+            font-size: 16px;
+        }
+        
+        /* 隱藏 CodeIgniter Debug Toolbar */
+        #toolbarContainer {
+            display: none !important;
+        }
+        
         /* 自定義滾動條 */
         ::-webkit-scrollbar {
             width: 8px;
@@ -90,9 +100,9 @@
         /* 狀態徽章 */
         .status-badge {
             display: inline-block;
-            padding: 4px 12px;
+            padding: 6px 14px;
             border-radius: 9999px;
-            font-size: 12px;
+            font-size: 13px;
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -112,6 +122,21 @@
             background-color: #fee2e2;
             color: #991b1b;
         }
+        
+        /* 分頁按鈕 */
+        .pagination-btn {
+            transition: all 0.2s ease;
+        }
+        
+        .pagination-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .pagination-btn.active {
+            background-color: #3b82f6 !important;
+            color: white !important;
+        }
     </style>
 </head>
 
@@ -127,18 +152,27 @@
                         </svg>
                     </div>
                     <div>
-                        <h1 class="text-2xl font-bold text-gray-900">Bonus Shoes</h1>
-                        <p class="text-sm text-gray-500">鞋子資料管理系統</p>
+                        <h1 class="text-3xl font-bold text-gray-900">Bonus Shoes</h1>
+                        <p class="text-base text-gray-500">鞋子資料管理系統</p>
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
-                    <button id="refreshBtn" class="inline-flex items-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md">
+                    <div class="flex items-center space-x-2">
+                        <label class="text-sm font-medium text-gray-700">每頁顯示</label>
+                        <select id="itemsPerPage" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base">
+                            <option value="10">10</option>
+                            <option value="20" selected>20</option>
+                            <option value="50">50</option>
+                            <option value="100">100</option>
+                        </select>
+                    </div>
+                    <button id="refreshBtn" class="inline-flex items-center px-5 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md text-base">
                         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                         </svg>
                         重新整理
                     </button>
-                    <div id="totalCount" class="text-sm text-gray-600 bg-gray-100 px-4 py-2 rounded-lg">
+                    <div id="totalCount" class="text-base text-gray-600 bg-gray-100 px-5 py-2.5 rounded-lg">
                         載入中...
                     </div>
                 </div>
@@ -152,12 +186,12 @@
         <div class="bg-white rounded-xl shadow-sm p-6 mb-6">
             <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">搜尋</label>
-                    <input type="text" id="searchInput" placeholder="搜尋商品名稱或代碼..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                    <label class="block text-base font-medium text-gray-700 mb-2">搜尋</label>
+                    <input type="text" id="searchInput" placeholder="搜尋商品名稱或代碼..." class="w-full px-4 py-2.5 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">狀態篩選</label>
-                    <select id="actionFilter" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                    <label class="block text-base font-medium text-gray-700 mb-2">狀態篩選</label>
+                    <select id="actionFilter" class="w-full px-4 py-2.5 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
                         <option value="">全部狀態</option>
                         <option value="新增">新增</option>
                         <option value="更新">更新</option>
@@ -165,8 +199,8 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">價格範圍</label>
-                    <select id="priceFilter" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                    <label class="block text-base font-medium text-gray-700 mb-2">價格範圍</label>
+                    <select id="priceFilter" class="w-full px-4 py-2.5 text-base border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
                         <option value="">全部價格</option>
                         <option value="0-3000">0 - 3,000</option>
                         <option value="3000-5000">3,000 - 5,000</option>
@@ -186,19 +220,59 @@
                 <table class="min-w-full divide-y divide-gray-200">
                     <thead class="bg-gradient-to-r from-gray-50 to-gray-100">
                         <tr>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">ID</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">圖片</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">商品名稱</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">商品代碼</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">希望價格</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">價格</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">點數</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">尺寸</th>
-                            <th class="px-6 py-4 text-left text-xs font-semibold text-gray-700 uppercase tracking-wider">狀態</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">ID</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">圖片</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">商品名稱</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">商品代碼</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">希望價格</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">價格</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">點數</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">尺寸</th>
+                            <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700 uppercase tracking-wider">狀態</th>
                         </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200"></tbody>
                 </table>
+            </div>
+        </div>
+
+        <!-- 分頁控制 -->
+        <div id="paginationContainer" class="bg-white rounded-xl shadow-sm p-6 mt-6 hidden">
+            <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+                <div class="text-base text-gray-600">
+                    顯示第 <span id="rangeStart" class="font-semibold text-gray-900">1</span> - 
+                    <span id="rangeEnd" class="font-semibold text-gray-900">20</span> 筆，
+                    共 <span id="totalItems" class="font-semibold text-gray-900">0</span> 筆
+                </div>
+                
+                <div class="flex items-center space-x-2">
+                    <button id="firstPageBtn" class="pagination-btn px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-base">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 19l-7-7 7-7m8 14l-7-7 7-7"/>
+                        </svg>
+                    </button>
+                    <button id="prevPageBtn" class="pagination-btn px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-base">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        let filteredData = [];
+        let currentPage = 1;
+        let itemsPerPage = 20;
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                    </button>
+                    
+                    <div id="pageNumbers" class="flex items-center space-x-2"></div>
+                    
+                    <button id="nextPageBtn" class="pagination-btn px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-base">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                    <button id="lastPageBtn" class="pagination-btn px-4 py-2 bg-white border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed text-base">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/>
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -238,8 +312,11 @@
 
                 if (result.success && result.data.length > 0) {
                     allTableData = result.data;
+                    filteredData = result.data;
                     updateTotalCount(result.data.length);
-                    renderTable(result.data);
+                    currentPage = 1;
+                    renderTable(getCurrentPageData());
+                    renderPagination();
                 } else {
                     showNoDataMessage();
                 }
@@ -259,6 +336,7 @@
                 showNoDataMessage();
                 return;
             }
+            $('#paginationContainer').removeClass('hidden');
             
             $('#tableContainer').show();
             $('#noDataMessage').addClass('hidden');
@@ -269,8 +347,7 @@
                 const delay = index * 30;
                 
                 const row = $(`
-                    <tr class="hover:bg-gray-50 transition-colors" style="animation: fadeIn 0.3s ease ${delay}ms both;">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <tr class="hover:bg-gray-50 transition-colors" sbase font-medium text-gray-900">
                             ${item.id || '-'}
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap">
@@ -281,21 +358,22 @@
                                      onerror="this.onerror=null; this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22${IMG_SIZE}%22 height=%22${IMG_SIZE}%22%3E%3Crect fill=%22%23e5e7eb%22 width=%22${IMG_SIZE}%22 height=%22${IMG_SIZE}%22/%3E%3Ctext fill=%22%239ca3af%22 x=%2250%25%22 y=%2250%25%22 text-anchor=%22middle%22 dy=%22.3em%22 font-family=%22sans-serif%22 font-size=%2212%22%3E無圖片%3C/text%3E%3C/svg%3E';">
                             </div>
                         </td>
-                        <td class="px-6 py-4 text-sm text-gray-900">
+                        <td class="px-6 py-4 text-base text-gray-900">
                             <div class="font-medium">${item.eng_name || '-'}</div>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600 font-mono">
+                        <td class="px-6 py-4 whitespace-nowrap text-base text-gray-600 font-mono">
                             ${item.code || '-'}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                        <td class="px-6 py-4 whitespace-nowrap text-base text-gray-900">
                             ${formatPrice(item.hope_price)}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                        <td class="px-6 py-4 whitespace-nowrap text-base font-semibold text-gray-900">
                             ${formatPrice(item.price)}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                        <td class="px-6 py-4 whitespace-nowrap text-base text-gray-600">
                             ${item.point || '-'}
                         </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-base
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
                             ${item.size || '-'}
                         </td>
@@ -350,7 +428,93 @@
         function showNoDataMessage() {
             $('#tableContainer').hide();
             $('#noDataMessage').removeClass('hidden');
+            $('#paginationContainer').addClass('hidden');
             updateTotalCount(0);
+        }
+        
+        // 獲取當前頁面資料
+        functio每頁顯示數量變更
+            $('#itemsPerPage').on('change', function() {
+                itemsPerPage = parseInt($(this).val());
+                currentPage = 1;
+                renderTable(getCurrentPageData());
+                renderPagination();
+            });
+            
+            // 重新整理按鈕
+            $('#refreshBtn').on('click', function() {
+                const btn = $(this);
+                btn.find('svg').addClass('animate-spin');
+                loadTableData().finally(() => {
+                    setTimeout(() => {
+                        btn.find('svg').removeClass('animate-spin');
+                    }, 500);
+                });
+            });
+            
+            // 搜尋功能
+            $('#searchInput').on('input', debounce(applyFilters, 300));
+            
+            // 狀態篩選
+            $('#actionFilter').on('change', applyFilters);
+            
+            // 價格篩選
+            $('#priceFilter').on('change', applyFilters);
+            filteredData = allTableData.filter(item => {
+                // 搜尋篩選
+                const matchSearch = !searchTerm || 
+                    (item.eng_name && item.eng_name.toLowerCase().includes(searchTerm)) ||
+                    (item.code && item.code.toLowerCase().includes(searchTerm));
+                
+                // 狀態篩選
+                const matchAction = !actionFilter || item.action === actionFilter;
+                
+                // 價格篩選
+                let matchPrice = true;
+                if (priceFilter) {
+                    const price = parseInt(item.price) || 0;
+                    switch(priceFilter) {
+                        case '0-3000':
+                            matchPrice = price <= 3000;
+                            break;
+                        case '3000-5000':
+                            matchPrice = price > 3000 && price <= 5000;
+                            break;
+                        case '5000-10000':
+                            matchPrice = price > 5000 && price <= 10000;
+                            break;
+                        case '10000+':
+                            matchPrice = price > 10000;
+                            break;
+                    }
+                }
+                
+                return matchSearch && matchAction && matchPrice;
+            });
+            
+            currentPage = 1;
+            updateTotalCount(filteredData.length);
+            renderTable(getCurrentPageData());
+            renderPagination(
+                    <button class="pagination-btn px-4 py-2 border border-gray-300 rounded-lg ${activeClass} text-base min-w-[44px]" data-page="${i}">
+                        ${i}
+                    </button>
+                `);
+                
+                btn.on('click', function() {
+                    goToPage($(this).data('page'));
+                });
+                
+                $pageNumbers.append(btn);
+            }
+        }
+        
+        // 前往指定頁面
+        function goToPage(page) {
+            currentPage = page;
+            renderTable(getCurrentPageData());
+            renderPagination();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
         }
 
         // 設定事件監聽器
