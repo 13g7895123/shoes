@@ -2,6 +2,14 @@
 
 # Bonus Shoes - 啟動腳本
 
+# 確保在專案根目錄執行
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ "$(basename "$SCRIPT_DIR")" == "scripts" ]]; then
+    cd "$(dirname "$SCRIPT_DIR")"
+else
+    cd "$SCRIPT_DIR"
+fi
+
 echo "🚀 啟動 Bonus Shoes 專案..."
 
 # 檢查 .env 檔案

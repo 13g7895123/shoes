@@ -12,10 +12,15 @@ echo "   Bonus Shoes 完整修復腳本"
 echo "============================================"
 echo ""
 
-# 使用腳本所在的目錄
+# Step 0: 確保在專案根目錄執行
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-cd "$SCRIPT_DIR"
-echo "📍 工作目錄: $SCRIPT_DIR"
+if [[ "$(basename "$SCRIPT_DIR")" == "scripts" ]]; then
+    cd "$(dirname "$SCRIPT_DIR")"
+else
+    cd "$SCRIPT_DIR"
+fi
+
+echo "📍 工作目錄: $(pwd)"
 echo ""
 
 # Step 1: 修復主機端權限

@@ -196,6 +196,13 @@ class Database extends Config
 
         // Load database configuration from environment variables
         $this->default['hostname'] = env('database.default.hostname', 'mysql');
+
+        // In Docker environment, 'localhost' often refers to the PHP container itself.
+        // If it's set to localhost, we likely want the 'mysql' service name instead.
+        if ($this->default['hostname'] === 'localhost' || empty($this->default['hostname'])) {
+            $this->default['hostname'] = 'mysql';
+        }
+
         $this->default['username'] = env('database.default.username', 'bonus_user');
         $this->default['password'] = env('database.default.password', 'bonus_password');
         $this->default['database'] = env('database.default.database', 'bonus_shoes');

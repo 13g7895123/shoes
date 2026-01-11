@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# 確保在專案根目錄執行
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ "$(basename "$SCRIPT_DIR")" == "scripts" ]]; then
+    cd "$(dirname "$SCRIPT_DIR")"
+else
+    cd "$SCRIPT_DIR"
+fi
+
 # 權限重置終極腳本 - Bonus Shoes 遷移專案專用
 
 echo "🔧 開始執行權限修復..."
