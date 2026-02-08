@@ -7,9 +7,55 @@
 - ✅ **現代化框架**: CodeIgniter 4.6
 - ✅ **容器化部署**: Docker Compose
 - ✅ **RESTful API**: 標準化 API 設計
+- ✅ **API 管理系統**: API Key 認證與使用日誌
 - ✅ **環境變數管理**: .env 配置
 - ✅ **資料庫管理**: MySQL 8.0 + phpMyAdmin
 - ✅ **前端框架**: Tailwind CSS
+
+## 🔑 API 管理功能
+
+### API Key 管理
+訪問 http://localhost:8080/admin/api-keys 管理 API Keys
+
+功能特色：
+- 🔐 **API Key 生成**: 自動生成安全的 API Key (`sk_` 前綴)
+- 👥 **權限管理**: 支援 READ、WRITE、DELETE、ADMIN 四種權限
+- 📋 **金鑰列表**: 查看所有已建立的 API Keys
+- 🔄 **狀態管理**: 啟用/停用 API Key
+- 📋 **自動複製**: 生成後自動複製到剪貼簿
+
+### API 使用記錄
+訪問 http://localhost:8080/admin/api-logs 查看 API 調用日誌
+
+功能特色：
+- 📊 **完整記錄**: Request Headers、Body、Query Params
+- 📈 **統計數據**: 總請求數、成功率、今日統計
+- 🔍 **多維度篩選**: 按狀態、端點、HTTP 方法篩選
+- 🔎 **詳情查看**: 點擊查看完整 Request/Response
+- 📥 **CSV 匯出**: 支援匯出日誌為 CSV 格式
+- ⚡ **性能監控**: 記錄每個請求的響應時間
+
+### API 端點
+
+所有 API 端點都在 `/api/v1/` 路徑下，需要在 Header 中提供 API Key：
+
+```bash
+# Header 格式
+X-API-Key: your_api_key_here
+```
+
+**主要端點**：
+- `POST /api/v1/shoes/check-status` - 檢查商品狀態
+- `POST /api/v1/shoes` - 新增商品
+- `PUT /api/v1/shoes/{id}` - 更新商品
+- `DELETE /api/v1/shoes/{id}` - 刪除商品
+- `GET /api/v1/shoes/codes` - 獲取商品代碼列表
+- `POST /api/v1/shoes/batch` - 批次新增
+- `PUT /api/v1/shoes/batch` - 批次更新
+- `DELETE /api/v1/shoes/clear/{confirm}` - 清空資料表
+- `GET /api/v1/health/database` - 資料庫健康檢查
+
+詳細 API 文件請參考 [API說明文件.md](API說明文件.md)
 
 ## 🚀 快速開始
 
@@ -50,6 +96,8 @@ docker-compose exec php chmod -R 775 writable/
 
 3. **訪問應用程式**
 - 主應用: http://localhost:8080
+- API Key 管理: http://localhost:8080/admin/api-keys
+- API 使用記錄: http://localhost:8080/admin/api-logs
 - phpMyAdmin: http://localhost:8081
 
 ## 📁 專案結構
@@ -59,10 +107,14 @@ bonus.shoes/
 ├── app/                      # 應用程式核心
 │   ├── Config/              # 配置檔案
 │   ├── Controllers/         # 控制器
-│   │   └── Api/            # API 控制器
+│   │   ├── Api/            # API 控制器
+│   │   └── Admin/          # 管理後台控制器
 │   ├── Models/             # 資料模型
+│   ├── Filters/            # 過濾器（API 認證、日誌）
+│   ├── Database/           # 資料庫遷移
 │   └── Views/              # 視圖檔案
-│       └── shoes/          # 鞋子相關視圖
+│       ├── shoes/          # 鞋子相關視圖
+│       └── admin/          # 管理後台視圖
 ├── docker/                  # Docker 配置
 │   ├── nginx/              # Nginx 配置
 │   ├── php/                # PHP-FPM 配置
@@ -238,6 +290,9 @@ npm run watch
 - ✅ CSRF 保護已啟用
 - ✅ XSS 過濾
 - ✅ SQL 注入防護（使用 Query Builder）
+- ✅ API Key 認證（X-API-Key Header）
+- ✅ 權限分級控制（READ/WRITE/DELETE/ADMIN）
+- ✅ API 調用日誌記錄
 - ✅ 環境變數管理敏感資訊
 - ✅ .env 檔案已加入 .gitignore
 
