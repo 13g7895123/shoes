@@ -13,7 +13,7 @@ class ShoesModel extends Model
     protected $useSoftDeletes   = false;
     protected $protectFields    = true;
     protected $allowedFields    = [
-        'images',
+        'name',
         'eng_name',
         'code',
         'hope_price',
@@ -32,35 +32,39 @@ class ShoesModel extends Model
 
     // Validation
     protected $validationRules      = [
-        'eng_name'    => 'permit_empty|max_length[255]',
-        'code'        => 'permit_empty|max_length[100]',
-        'hope_price'  => 'permit_empty|decimal',
-        'price'       => 'permit_empty|decimal',
-        'point'       => 'permit_empty|integer',
-        'size'        => 'permit_empty|max_length[50]',
-        'action'      => 'permit_empty|in_list[新增,更新,刪除]'
+        'name'        => 'permit_empty|max_length[200]',
+        'eng_name'    => 'permit_empty|max_length[200]',
+        'code'        => 'permit_empty|max_length[50]',
+        'hope_price'  => 'permit_empty|max_length[20]',
+        'price'       => 'permit_empty|max_length[20]',
+        'point'       => 'permit_empty|max_length[20]',
+        'size'        => 'permit_empty|max_length[500]',
+        'action'      => 'permit_empty|max_length[50]'
     ];
     protected $validationMessages   = [
+        'name' => [
+            'max_length' => '商品名稱不能超過 200 個字元'
+        ],
         'eng_name' => [
-            'max_length' => '英文名稱不能超過 255 個字元'
+            'max_length' => '英文名稱不能超過 200 個字元'
         ],
         'code' => [
-            'max_length' => '商品代碼不能超過 100 個字元'
+            'max_length' => '商品代碼不能超過 50 個字元'
         ],
         'hope_price' => [
-            'decimal' => '希望價格必須是數字'
+            'max_length' => '希望價格不能超過 20 個字元'
         ],
         'price' => [
-            'decimal' => '價格必須是數字'
+            'max_length' => '價格不能超過 20 個字元'
         ],
         'point' => [
-            'integer' => '點數必須是整數'
+            'max_length' => '點數不能超過 20 個字元'
         ],
         'size' => [
-            'max_length' => '尺寸不能超過 50 個字元'
+            'max_length' => '尺寸不能超過 500 個字元'
         ],
         'action' => [
-            'in_list' => '動作必須是：新增、更新或刪除'
+            'max_length' => '動作不能超過 50 個字元'
         ]
     ];
     protected $skipValidation       = false;
