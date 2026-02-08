@@ -21,6 +21,13 @@
     </style>
 </head>
 <body>
+    <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+        <h1 style="font-size: 24px; font-weight: 700;">API Key 管理</h1>
+        <div style="display: flex; gap: 12px;">
+            <a href="/" style="padding: 10px 16px; background: #e5e7eb; color: #374151; text-decoration: none; border-radius: 8px; font-size: 14px;">🏠 首頁</a>
+            <a href="/admin/api-logs" style="padding: 10px 16px; background: #3b82f6; color: #fff; text-decoration: none; border-radius: 8px; font-size: 14px;">📊 查看使用記錄</a>
+        </div>
+    </div>
     <div class="card">
         <div class="title">建立 API Key</div>
         <?php if (session()->getFlashdata('error')): ?>

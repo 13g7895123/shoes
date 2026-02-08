@@ -157,6 +157,12 @@
                     </div>
                 </div>
                 <div class="flex items-center space-x-4">
+                    <a href="/admin/api-keys" class="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors text-base font-medium">
+                        🔑 API Key
+                    </a>
+                    <a href="/admin/api-logs" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors text-base font-medium">
+                        📊 使用記錄
+                    </a>
                     <div class="flex items-center space-x-2">
                         <label class="text-sm font-medium text-gray-700">每頁顯示</label>
                         <select id="itemsPerPage" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-base">

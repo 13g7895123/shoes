@@ -13,14 +13,20 @@ $routes->get('/', 'Home::index');
 $routes->get('admin/api-keys', 'Admin\ApiKeys::index');
 $routes->post('admin/api-keys', 'Admin\ApiKeys::create');
 
+// API 日志管理頁面
+$routes->get('admin/api-logs', 'Admin\ApiLogs::index');
+$routes->get('admin/api-logs/detail/(:num)', 'Admin\ApiLogs::detail/$1');
+$routes->post('admin/api-logs/clean', 'Admin\ApiLogs::clean');
+$routes->get('admin/api-logs/export', 'Admin\ApiLogs::export');
+
 // 公開 API (不需要認證，供前端頁面使用)
-$routes->group('api', ['namespace' => 'App\Controllers\Api'], function ($routes) {
+$routes->group('api', ['namespace' => 'App\Controllers\Api', 'filter' => 'apilogger'], function ($routes) {
     $routes->get('shoes', 'ShoesController::index');
     $routes->get('shoes/(:num)', 'ShoesController::show/$1');
 });
 
 // API 路由群組
-$routes->group('api/v1', ['namespace' => 'App\Controllers\Api', 'filter' => 'apikey'], function ($routes) {
+$routes->group('api/v1', ['namespace' => 'App\Controllers\Api', 'filter' => ['apikey', 'apilogger']], function ($routes) {
     // 健康檢查（無需認證）
     $routes->get('health/database', 'HealthController::database');
     
