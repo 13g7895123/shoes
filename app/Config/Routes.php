@@ -19,6 +19,10 @@ $routes->get('admin/api-logs/detail/(:num)', 'Admin\ApiLogs::detail/$1');
 $routes->post('admin/api-logs/clean', 'Admin\ApiLogs::clean');
 $routes->get('admin/api-logs/export', 'Admin\ApiLogs::export');
 
+// 執行歷史管理頁面
+$routes->get('admin/execution-history', 'Admin\ExecutionHistory::index');
+$routes->get('admin/execution-history/detail/(:segment)', 'Admin\ExecutionHistory::detail/$1');
+
 // 公開 API (不需要認證，供前端頁面使用)
 $routes->group('api', ['namespace' => 'App\Controllers\Api', 'filter' => 'apilogger'], function ($routes) {
     $routes->get('shoes', 'ShoesController::index');
@@ -45,4 +49,14 @@ $routes->group('api/v1', ['namespace' => 'App\Controllers\Api', 'filter' => ['ap
     // 相容舊版 AJAX 端點（如果需要）
     $routes->get('shoes/db-info', 'ShoesController::dbInfo');
     $routes->get('shoes/table-content', 'ShoesController::tableContent');
+    
+    // 執行歷史記錄 API
+    $routes->post('shoes/execution/start', 'ExecutionController::start');
+    $routes->post('shoes/execution/log', 'ExecutionController::log');
+    $routes->post('shoes/execution/log-batch', 'ExecutionController::logBatch');
+    $routes->post('shoes/execution/complete', 'ExecutionController::complete');
+    $routes->get('shoes/execution/history', 'ExecutionController::history');
+    $routes->get('shoes/execution/statistics', 'ExecutionController::statistics');
+    $routes->get('shoes/execution/(:segment)', 'ExecutionController::detail/$1');
+    $routes->get('shoes/(:segment)/changes', 'ExecutionController::productChanges/$1');
 });
