@@ -22,6 +22,7 @@ $routes->get('admin/api-logs/export', 'Admin\ApiLogs::export');
 // 執行歷史管理頁面
 $routes->get('admin/execution-history', 'Admin\ExecutionHistory::index');
 $routes->get('admin/execution-history/detail/(:segment)', 'Admin\ExecutionHistory::detail/$1');
+$routes->post('admin/execution-history/rollback/(:segment)', 'Admin\ExecutionHistory::rollback/$1');
 
 // 公開 API (不需要認證，供前端頁面使用)
 $routes->group('api', ['namespace' => 'App\Controllers\Api', 'filter' => 'apilogger'], function ($routes) {
