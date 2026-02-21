@@ -311,7 +311,7 @@ class ShoesApiController extends ResourceController
         try {
             $json = $this->request->getJSON(true);
 
-            // 驗證必填欄位
+            // 驗證必填欄位（eng_name 為必填，爬蟲在同一次爬取中即帶有此值，以 request 傳入為準）
             $required = ['name', 'eng_name', 'code', 'price'];
             foreach ($required as $field) {
                 if (empty($json[$field])) {
