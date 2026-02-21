@@ -47,7 +47,7 @@
 
 <?php
     // 計算目前路徑以高亮側欄
-    $currentPath = '/' . ltrim(service('uri')->getURIString(), '/');
+    $currentPath = '/' . ltrim(uri_string(), '/');
 ?>
 
 <div class="flex min-h-screen">
