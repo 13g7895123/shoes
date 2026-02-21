@@ -18,7 +18,7 @@ jobs:
         key: ${{ secrets.VPS_SSH_KEY }}
         port: ${{ secrets.VPS_PORT }}
         script: |
-          cd /home/jarvis/project/bonus/official/shoes  # Change this to your actual project path on VPS
+          cd /home/jarvis/project/bonus/01_official/02_shoes  # Change this to your actual project path on VPS
           git pull origin master
           
           # Optional: Run composer install if you have dependencies to update
