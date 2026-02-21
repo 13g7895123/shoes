@@ -16,28 +16,12 @@ class HealthController extends ResourceController
     {
         try {
             $db = \Config\Database::connect();
-            
-            $startTime = microtime(true);
             $db->query('SELECT 1');
-            $endTime = microtime(true);
-            
-            $responseTime = round(($endTime - $startTime) * 1000, 2);
-            
-            return $this->respond([
-                'status' => 'success',
-                'database' => 'connected',
-                'response_time_ms' => $responseTime,
-                'timestamp' => date('Y-m-d\TH:i:s\Z')
-            ], 200);
-            
+
+            return $this->respond(['database' => 'connected'], 200);
+
         } catch (\Exception $e) {
-            return $this->respond([
-                'status' => 'error',
-                'database' => 'disconnected',
-                'message' => '資料庫連線失敗',
-                'error_code' => 'DATABASE_UNAVAILABLE',
-                'timestamp' => date('Y-m-d\TH:i:s\Z')
-            ], 503);
+            return $this->respond(['database' => 'disconnected'], 503);
         }
     }
 }

@@ -30,66 +30,44 @@ class ShoesApiController extends ResourceController
 
             // 驗證必填欄位
             if (empty($json['code'])) {
-                return $this->fail([
-                    'status' => 'error',
+                return $this->respond([
+                    'success' => false,
                     'message' => '商品編號不可為空',
-                    'error_code' => 'MISSING_REQUIRED_FIELD',
-                    'field' => 'code'
+                    'data'    => null
                 ], 400);
             }
 
             if (empty($json['price'])) {
-                return $this->fail([
-                    'status' => 'error',
+                return $this->respond([
+                    'success' => false,
                     'message' => '價格不可為空',
-                    'error_code' => 'MISSING_REQUIRED_FIELD',
-                    'field' => 'price'
+                    'data'    => null
                 ], 400);
             }
 
             // size 允許為空，不進行驗證
 
-            // 查詢商品
+            // 查詢商品是否存在
             $existing = $this->model->where('code', $json['code'])->first();
 
             if (!$existing) {
                 // 商品不存在，需要新增
-                return $this->respond([
-                    'status' => 'success',
-                    'action_required' => 2,
-                    'message' => '商品不存在，需要新增'
-                ], 200);
+                return $this->respond(['action_required' => 2], 200);
             }
 
             // 檢查是否需要更新
-            $needsUpdate = false;
             $newSize = $json['size'] ?? '';
             if ($existing['price'] != $json['price'] || $existing['size'] != $newSize) {
-                $needsUpdate = true;
+                return $this->respond(['action_required' => 1], 200);
             }
 
-            if ($needsUpdate) {
-                return $this->respond([
-                    'status' => 'success',
-                    'action_required' => 1,
-                    'message' => '商品資料需要更新',
-                    'existing_data' => $existing
-                ], 200);
-            }
-
-            return $this->respond([
-                'status' => 'success',
-                'action_required' => 0,
-                'message' => '商品資料無需更新',
-                'existing_data' => $existing
-            ], 200);
+            return $this->respond(['action_required' => 0], 200);
 
         } catch (\Exception $e) {
-            return $this->fail([
-                'status' => 'error',
+            return $this->respond([
+                'success' => false,
                 'message' => '伺服器錯誤',
-                'error_code' => 'INTERNAL_SERVER_ERROR',
-                'timestamp' => date('Y-m-d\TH:i:s\Z')
+                'data'    => null
             ], 500);
         }
     }
@@ -119,53 +97,47 @@ class ShoesApiController extends ResourceController
             // 檢查商品編號是否已存在
             $existing = $this->model->where('code', $json['code'])->first();
             if ($existing) {
-                return $this->fail([
-                    'status' => 'error',
+                return $this->respond([
+                    'success' => false,
                     'message' => '商品編號已存在',
-                    'error_code' => 'DUPLICATE_CODE',
-                    'field' => 'code',
-                    'value' => $json['code']
+                    'data'    => null
                 ], 409);
             }
 
             // 準備資料
             $data = [
-                'name' => $json['name'],
-                'eng_name' => $json['eng_name'],
-                'code' => $json['code'],
-                'price' => $json['price'],
+                'name'       => $json['name'],
+                'eng_name'   => $json['eng_name'],
+                'code'       => $json['code'],
+                'price'      => $json['price'],
                 'hope_price' => $json['hope_price'] ?? '',
-                'point' => $json['point'] ?? '',
-                'size' => $json['size'] ?? '',
-                'action' => '新增'
+                'point'      => $json['point'] ?? '',
+                'size'       => $json['size'] ?? '',
+                'action'     => '新增'
             ];
 
             // 新增商品
             $id = $this->model->insert($data);
 
             if (!$id) {
-                return $this->fail([
-                    'status' => 'error',
+                return $this->respond([
+                    'success' => false,
                     'message' => '商品新增失敗',
-                    'error_code' => 'INSERT_FAILED'
+                    'data'    => null
                 ], 500);
             }
 
-            // 取得新增的商品
-            $newProduct = $this->model->find($id);
-
-            return $this->respondCreated([
-                'status' => 'success',
+            return $this->respond([
+                'success' => true,
                 'message' => '商品新增成功',
-                'data' => $newProduct
-            ]);
+                'data'    => null
+            ], 201);
 
         } catch (\Exception $e) {
-            return $this->fail([
-                'status' => 'error',
+            return $this->respond([
+                'success' => false,
                 'message' => '伺服器錯誤: ' . $e->getMessage(),
-                'error_code' => 'INTERNAL_SERVER_ERROR',
-                'timestamp' => date('Y-m-d\TH:i:s\Z')
+                'data'    => null
             ], 500);
         }
     }
@@ -199,55 +171,41 @@ class ShoesApiController extends ResourceController
             }
 
             if (empty($json['size'])) {
-                return $this->fail([
-                    'status' => 'error',
+                return $this->respond([
+                    'success' => false,
                     'message' => 'size 不可為空',
-                    'error_code' => 'MISSING_REQUIRED_FIELD',
-                    'field' => 'size'
+                    'data'    => null
                 ], 400);
             }
 
             // 查詢商品
             $existing = $this->model->where('code', $code)->first();
             if (!$existing) {
-                return $this->fail([
-                    'status' => 'error',
+                return $this->respond([
+                    'success' => false,
                     'message' => '商品不存在',
-                    'error_code' => 'PRODUCT_NOT_FOUND',
-                    'code' => $code
+                    'data'    => null
                 ], 404);
             }
 
-            // 更新資料
-            $data = [
-                'price' => $json['price'],
-                'size' => $json['size'],
+            // 只更新 price 與 size
+            $this->model->where('code', $code)->set([
+                'price'  => $json['price'],
+                'size'   => $json['size'],
                 'action' => '更新'
-            ];
-
-            $this->model->where('code', $code)->set($data)->update();
-
-            // 取得更新後的商品
-            $updated = $this->model->where('code', $code)->first();
+            ])->update();
 
             return $this->respond([
-                'status' => 'success',
-                'message' => '商品資料更新成功',
-                'updated_fields' => ['price', 'size'],
-                'data' => [
-                    'code' => $code,
-                    'price' => $updated['price'],
-                    'size' => $updated['size'],
-                    'updated_at' => $updated['updated_at']
-                ]
+                'success' => true,
+                'message' => '商品更新成功',
+                'data'    => null
             ], 200);
 
         } catch (\Exception $e) {
-            return $this->fail([
-                'status' => 'error',
+            return $this->respond([
+                'success' => false,
                 'message' => '伺服器錯誤: ' . $e->getMessage(),
-                'error_code' => 'INTERNAL_SERVER_ERROR',
-                'timestamp' => date('Y-m-d\TH:i:s\Z')
+                'data'    => null
             ], 500);
         }
     }
@@ -271,11 +229,10 @@ class ShoesApiController extends ResourceController
             // 查詢商品
             $existing = $this->model->where('code', $code)->first();
             if (!$existing) {
-                return $this->fail([
-                    'status' => 'error',
+                return $this->respond([
+                    'success' => false,
                     'message' => '商品不存在',
-                    'error_code' => 'PRODUCT_NOT_FOUND',
-                    'code' => $code
+                    'data'    => null
                 ], 404);
             }
 
@@ -283,17 +240,16 @@ class ShoesApiController extends ResourceController
             $this->model->where('code', $code)->delete();
 
             return $this->respond([
-                'status' => 'success',
-                'message' => "商品 {$code} 已刪除",
-                'deleted_code' => $code
+                'success' => true,
+                'message' => '商品已刪除',
+                'data'    => null
             ], 200);
 
         } catch (\Exception $e) {
-            return $this->fail([
-                'status' => 'error',
+            return $this->respond([
+                'success' => false,
                 'message' => '伺服器錯誤: ' . $e->getMessage(),
-                'error_code' => 'INTERNAL_SERVER_ERROR',
-                'timestamp' => date('Y-m-d\TH:i:s\Z')
+                'data'    => null
             ], 500);
         }
     }
@@ -422,21 +378,13 @@ class ShoesApiController extends ResourceController
             $results = $builder->get()->getResultArray();
             $codes = array_column($results, 'code');
 
-            $total = $this->model->countAllResults(false);
-
-            return $this->respond([
-                'status' => 'success',
-                'total' => $total,
-                'count' => count($codes),
-                'codes' => $codes
-            ], 200);
+            return $this->respond(['codes' => $codes], 200);
 
         } catch (\Exception $e) {
-            return $this->fail([
-                'status' => 'error',
+            return $this->respond([
+                'success' => false,
                 'message' => '伺服器錯誤: ' . $e->getMessage(),
-                'error_code' => 'INTERNAL_SERVER_ERROR',
-                'timestamp' => date('Y-m-d\TH:i:s\Z')
+                'data'    => null
             ], 500);
         }
     }
@@ -452,45 +400,38 @@ class ShoesApiController extends ResourceController
             $allowedTables = ['shoes_show_inf'];
 
             if (!in_array($tableName, $allowedTables)) {
-                return $this->fail([
-                    'status' => 'error',
+                return $this->respond([
+                    'success' => false,
                     'message' => '不允許清空此資料表',
-                    'error_code' => 'TABLE_NOT_ALLOWED',
-                    'table_name' => $tableName,
-                    'allowed_tables' => $allowedTables
+                    'data'    => null
                 ], 403);
             }
 
             $json = $this->request->getJSON(true);
 
-            // 確認參數
+            // 確認參數（防呆機制，必須傳 true 才執行）
             if (!isset($json['confirm']) || $json['confirm'] !== true) {
-                return $this->fail([
-                    'status' => 'error',
-                    'message' => '缺少確認參數或確認參數不正確',
-                    'error_code' => 'MISSING_CONFIRMATION'
+                return $this->respond([
+                    'success' => false,
+                    'message' => '請確認清空操作',
+                    'data'    => null
                 ], 400);
             }
-
-            // 計算刪除數量（使用 showModel 操作 shoes_show_inf）
-            $count = $this->showModel->countAllResults(false);
 
             // 清空資料表
             $this->showModel->truncate();
 
             return $this->respond([
-                'status' => 'success',
-                'message' => "資料表 {$tableName} 已清空",
-                'table_name' => $tableName,
-                'deleted_count' => $count
+                'success' => true,
+                'message' => '資料表已清空',
+                'data'    => null
             ], 200);
 
         } catch (\Exception $e) {
-            return $this->fail([
-                'status' => 'error',
+            return $this->respond([
+                'success' => false,
                 'message' => '伺服器錯誤: ' . $e->getMessage(),
-                'error_code' => 'INTERNAL_SERVER_ERROR',
-                'timestamp' => date('Y-m-d\TH:i:s\Z')
+                'data'    => null
             ], 500);
         }
     }

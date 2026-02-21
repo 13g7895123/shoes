@@ -102,15 +102,17 @@ Accept: application/json
 |---|---|---|---|---|
 | 1 | `GET` | `/health/database` | 健康檢查／確認資料庫連線 | **必要** |
 | 2 | `POST` | `/shoes/check-status` | 檢查單一商品狀態（需新增/更新/略過） | **必要** |
-| 3 | `GET` | `/shoes/:code` | 取得單一商品資料 | 啟用歷史記錄時必要 |
+| 3 | `GET` | `/shoes/:code` | 取得單一商品資料 | 啟用歷史記錄或刪除偵測時必要 |
 | 4 | `POST` | `/shoes` | 新增商品至 `shoes_inf` | **必要** |
 | 5 | `PUT` | `/shoes/:code` | 更新商品價格與尺寸 | **必要** |
-| 6 | `POST` | `/shoes/show` | 新增展示用商品至 `shoes_show_inf` | **必要** |
-| 7 | `DELETE` | `/shoes/clear/:table_name` | 清空指定資料表 | **必要** |
-| 8 | `POST` | `/shoes/execution/start` | 開始執行記錄 | 啟用歷史記錄時必要 |
-| 9 | `POST` | `/shoes/execution/log` | 記錄單筆商品變更 | 啟用歷史記錄時必要 |
-| 10 | `POST` | `/shoes/execution/log-batch` | 批量記錄商品變更（最多 50 筆） | 啟用歷史記錄時必要 |
-| 11 | `POST` | `/shoes/execution/complete` | 完成執行記錄 | 啟用歷史記錄時必要 |
+| 6 | `DELETE` | `/shoes/:code` | 刪除下架商品 | **必要** |
+| 7 | `GET` | `/shoes/codes` | 取得 `shoes_inf` 中所有商品編號（下架比對用） | **必要** |
+| 8 | `POST` | `/shoes/show` | 新增展示用商品至 `shoes_show_inf` | **必要** |
+| 9 | `DELETE` | `/shoes/clear/:table_name` | 清空指定資料表 | **必要** |
+| 10 | `POST` | `/shoes/execution/start` | 開始執行記錄 | 啟用歷史記錄時必要 |
+| 11 | `POST` | `/shoes/execution/log` | 記錄單筆商品變更 | 啟用歷史記錄時必要 |
+| 12 | `POST` | `/shoes/execution/log-batch` | 批量記錄商品變更（最多 50 筆） | 啟用歷史記錄時必要 |
+| 13 | `POST` | `/shoes/execution/complete` | 完成執行記錄 | 啟用歷史記錄時必要 |
 
 ---
 
@@ -365,7 +367,74 @@ UPDATE shoes_inf SET price = :price, size = :size WHERE code = :code
 
 ---
 
-### 6. 新增展示用商品
+### 6. 刪除下架商品
+
+從 `shoes_inf` 中刪除本次爬蟲未再出現的商品（代表該商品已下架）。
+
+**執行時機**：商品比對完成後，取得 DB 所有 code（端點 7），與本次爬取結果比對，凡不在新結果中的 code 即呼叫此端點刪除。
+
+- **方法**：`DELETE`
+- **路徑**：`/shoes/:code`
+- **路徑參數**：`code` = 商品編號
+- **請求 Body**：無
+
+**對應 SQL**
+
+```sql
+DELETE FROM shoes_inf WHERE code = :code
+```
+
+**成功回應** `200 OK`
+
+```json
+{
+  "success": true,
+  "message": "商品已刪除",
+  "data": null
+}
+```
+
+**失敗回應** `404 Not Found`
+
+```json
+{
+  "success": false,
+  "message": "商品不存在",
+  "data": null
+}
+```
+
+---
+
+### 7. 取得所有商品編號
+
+取得 `shoes_inf` 中目前所有商品的 code 清單，用於與本次爬取結果比對以偵測下架商品。
+
+- **方法**：`GET`
+- **路徑**：`/shoes/codes`
+- **請求 Body**：無
+
+**對應 SQL**
+
+```sql
+SELECT code FROM shoes_inf
+```
+
+**成功回應** `200 OK`
+
+```json
+{
+  "codes": ["ABC12345", "XYZ67890", "DEF11111"]
+}
+```
+
+| 欄位 | 型別 | 說明 |
+|---|---|---|
+| `codes` | `array<string>` | 所有商品編號陣列，當資料表為空時回傳空陣列 `[]` |
+
+---
+
+### 8. 新增展示用商品
 
 將本次有異動（新增或更新）的商品寫入 `shoes_show_inf` 展示資料表。
 
@@ -407,7 +476,7 @@ VALUES (:name, :eng_name, :code, :hope_price, :price, :point, :size)
 
 ---
 
-### 7. 清空資料表
+### 9. 清空資料表
 
 清空指定資料表的所有資料（`TRUNCATE TABLE`）。
 
@@ -461,7 +530,7 @@ TRUNCATE TABLE shoes_show_inf
 
 ---
 
-### 8. 開始執行記錄
+### 10. 開始執行記錄
 
 建立本次爬蟲執行的歷史記錄，回傳一組執行 ID 供後續呼叫使用。
 
@@ -504,7 +573,7 @@ TRUNCATE TABLE shoes_show_inf
 
 ---
 
-### 9. 記錄單筆商品變更
+### 11. 記錄單筆商品變更
 
 記錄單一商品的變更詳情到歷史資料表。
 
@@ -561,7 +630,7 @@ TRUNCATE TABLE shoes_show_inf
 
 ---
 
-### 10. 批量記錄商品變更
+### 12. 批量記錄商品變更
 
 批量提交多筆商品變更記錄，每 50 筆觸發一次呼叫。
 
@@ -616,7 +685,7 @@ TRUNCATE TABLE shoes_show_inf
 
 ---
 
-### 11. 完成執行記錄
+### 13. 完成執行記錄
 
 關閉本次執行記錄，寫入最終統計數字與結束時間。
 
@@ -725,11 +794,18 @@ shoes_inf 資料表欄位：
     │
     ├─ [enable_history=true] POST /shoes/execution/log-batch（每 50 筆觸發）
     │
-    ├─ 若有異動（created > 0 OR updated > 0）：
-    │   ├─ [7] DELETE /shoes/clear/shoes_show_inf  ←── 清空展示表
-    │   └─ [6] POST /shoes/show（逐筆寫入有異動商品）
+    ├─ 下架偵測：
+    │   ├─ [7] GET /shoes/codes  ←── 取得 DB 現有所有 code
+    │   ├─ 比對本次爬取結果，找出「在 DB 但不在新結果」的 code
+    │   └─ 對每個下架 code：
+    │       ├─ [3] GET /shoes/:code  ←── 取得商品資料（供 Excel 輸出）
+    │       └─ [6] DELETE /shoes/:code  ←── 從 DB 刪除
     │
-    ├─ 匯出 Excel
+    ├─ 若有異動（created > 0 OR updated > 0 OR deleted > 0）：
+    │   ├─ [9] DELETE /shoes/clear/shoes_show_inf  ←── 清空展示表
+    │   └─ [8] POST /shoes/show（逐筆寫入新增＋更新商品）
+    │
+    ├─ 匯出 Excel（新增=綠色 / 更新=黃色 / 刪除=紅色）
     │
     └─ [enable_history=true] POST /shoes/execution/complete
 ```

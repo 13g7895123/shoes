@@ -33,21 +33,21 @@ $routes->group('api', ['namespace' => 'App\Controllers\Api', 'filter' => 'apilog
 // API 路由群組
 $routes->group('api/v1', ['namespace' => 'App\Controllers\Api', 'filter' => ['apikey', 'apilogger']], function ($routes) {
     // 健康檢查（無需認證）
-    $routes->get('health/database', 'HealthController::database');
+    $routes->get('health/database', 'HealthController::database');       // 端點 #1
     
     // 商品管理 API
-    $routes->post('shoes/check-status', 'ShoesApiController::checkStatus');
-    $routes->get('shoes/codes', 'ShoesApiController::getCodes');
+    $routes->post('shoes/check-status', 'ShoesApiController::checkStatus');  // 端點 #2
+    $routes->get('shoes/codes', 'ShoesApiController::getCodes');             // 端點 #7
     $routes->post('shoes/batch', 'ShoesApiController::batchCreate');
     $routes->put('shoes/batch', 'ShoesApiController::batchUpdate');
-    $routes->delete('shoes/clear/(:segment)', 'ShoesApiController::clearTable/$1');
-    $routes->post('shoes/show', 'ShoesApiController::createShow');   // 端點 #6
+    $routes->delete('shoes/clear/(:segment)', 'ShoesApiController::clearTable/$1');  // 端點 #9
+    $routes->post('shoes/show', 'ShoesApiController::createShow');           // 端點 #8
 
     // RESTful CRUD
-    $routes->post('shoes', 'ShoesApiController::create');
-    $routes->get('shoes/(:segment)', 'ShoesApiController::getShoe/$1');  // 端點 #3
-    $routes->put('shoes/(:segment)', 'ShoesApiController::update/$1');
-    $routes->delete('shoes/(:segment)', 'ShoesApiController::delete/$1');
+    $routes->post('shoes', 'ShoesApiController::create');                    // 端點 #4
+    $routes->get('shoes/(:segment)', 'ShoesApiController::getShoe/$1');      // 端點 #3
+    $routes->put('shoes/(:segment)', 'ShoesApiController::update/$1');       // 端點 #5
+    $routes->delete('shoes/(:segment)', 'ShoesApiController::delete/$1');    // 端點 #6
     
     // 相容舊版 AJAX 端點（如果需要）
     $routes->get('shoes/db-info', 'ShoesController::dbInfo');
