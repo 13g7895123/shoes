@@ -72,7 +72,7 @@ class ProductChangeLogModel extends Model
     /**
      * 批量插入變更記錄
      */
-    public function insertBatch(array $changes)
+    public function insertChangeBatch(array $changes)
     {
         if (empty($changes)) {
             return true;

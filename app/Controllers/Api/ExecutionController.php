@@ -171,7 +171,7 @@ class ExecutionController extends BaseController
                 ];
             }
 
-            $this->changeLogModel->insertBatch($changes);
+            $this->changeLogModel->insertChangeBatch($changes);
 
             return $this->respond([
                 'success' => true,
