@@ -26,6 +26,7 @@ jobs:
           
           # Run migrations
           # docker compose -f ./docker/docker-compose.yml exec -T php php spark migrate
+          docker exec bonus_shoes_php php spark migrate
           
           # Restart containers to apply changes (optional but recommended)
           # docker compose down
