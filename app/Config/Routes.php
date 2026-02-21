@@ -40,9 +40,11 @@ $routes->group('api/v1', ['namespace' => 'App\Controllers\Api', 'filter' => ['ap
     $routes->post('shoes/batch', 'ShoesApiController::batchCreate');
     $routes->put('shoes/batch', 'ShoesApiController::batchUpdate');
     $routes->delete('shoes/clear/(:segment)', 'ShoesApiController::clearTable/$1');
-    
+    $routes->post('shoes/show', 'ShoesApiController::createShow');   // 端點 #6
+
     // RESTful CRUD
     $routes->post('shoes', 'ShoesApiController::create');
+    $routes->get('shoes/(:segment)', 'ShoesApiController::getShoe/$1');  // 端點 #3
     $routes->put('shoes/(:segment)', 'ShoesApiController::update/$1');
     $routes->delete('shoes/(:segment)', 'ShoesApiController::delete/$1');
     

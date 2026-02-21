@@ -3,6 +3,7 @@
 namespace App\Controllers\Api;
 
 use App\Models\ShoesModel;
+use App\Models\ShoesShowModel;
 use CodeIgniter\RESTful\ResourceController;
 
 class ShoesApiController extends ResourceController
@@ -10,10 +11,12 @@ class ShoesApiController extends ResourceController
     protected $modelName = 'App\Models\ShoesModel';
     protected $format = 'json';
     protected $model;
+    protected $showModel;
 
     public function __construct()
     {
-        $this->model = new ShoesModel();
+        $this->model     = new ShoesModel();
+        $this->showModel = new ShoesShowModel();
     }
 
     /**
@@ -296,6 +299,110 @@ class ShoesApiController extends ResourceController
     }
 
     /**
+     * 取得單一商品資料
+     * GET /api/v1/shoes/:code
+     */
+    public function getShoe($code = null)
+    {
+        try {
+            if (empty($code)) {
+                return $this->fail([
+                    'success' => false,
+                    'message' => '商品編號不可為空',
+                    'data'    => null
+                ], 400);
+            }
+
+            $product = $this->model->getByCode($code);
+
+            if (!$product) {
+                return $this->fail([
+                    'success' => false,
+                    'message' => '商品不存在',
+                    'data'    => null
+                ], 404);
+            }
+
+            return $this->respond([
+                'success' => true,
+                'message' => 'ok',
+                'data'    => [
+                    'name'       => $product['name'],
+                    'eng_name'   => $product['eng_name'],
+                    'code'       => $product['code'],
+                    'hope_price' => $product['hope_price'],
+                    'price'      => $product['price'],
+                    'point'      => $product['point'],
+                    'size'       => $product['size'],
+                ]
+            ], 200);
+
+        } catch (\Exception $e) {
+            return $this->fail([
+                'success' => false,
+                'message' => '伺服器錯誤: ' . $e->getMessage(),
+                'data'    => null
+            ], 500);
+        }
+    }
+
+    /**
+     * 新增展示用商品
+     * POST /api/v1/shoes/show
+     */
+    public function createShow()
+    {
+        try {
+            $json = $this->request->getJSON(true);
+
+            // 驗證必填欄位
+            $required = ['name', 'eng_name', 'code', 'price'];
+            foreach ($required as $field) {
+                if (empty($json[$field])) {
+                    return $this->fail([
+                        'success' => false,
+                        'message' => "{$field} 不可為空",
+                        'data'    => null
+                    ], 400);
+                }
+            }
+
+            $data = [
+                'name'       => $json['name'],
+                'eng_name'   => $json['eng_name'],
+                'code'       => $json['code'],
+                'price'      => $json['price'],
+                'hope_price' => $json['hope_price'] ?? '',
+                'point'      => $json['point'] ?? '',
+                'size'       => $json['size'] ?? '',
+            ];
+
+            $id = $this->showModel->insert($data);
+
+            if (!$id) {
+                return $this->fail([
+                    'success' => false,
+                    'message' => '展示商品新增失敗',
+                    'data'    => null
+                ], 500);
+            }
+
+            return $this->respondCreated([
+                'success' => true,
+                'message' => '展示商品新增成功',
+                'data'    => null
+            ]);
+
+        } catch (\Exception $e) {
+            return $this->fail([
+                'success' => false,
+                'message' => '伺服器錯誤: ' . $e->getMessage(),
+                'data'    => null
+            ], 500);
+        }
+    }
+
+    /**
      * 取得所有商品編號
      * GET /api/shoes/codes
      */
@@ -365,11 +472,11 @@ class ShoesApiController extends ResourceController
                 ], 400);
             }
 
-            // 計算刪除數量
-            $count = $this->model->countAllResults(false);
+            // 計算刪除數量（使用 showModel 操作 shoes_show_inf）
+            $count = $this->showModel->countAllResults(false);
 
             // 清空資料表
-            $this->model->truncate();
+            $this->showModel->truncate();
 
             return $this->respond([
                 'status' => 'success',
