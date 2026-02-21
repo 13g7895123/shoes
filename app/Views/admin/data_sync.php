@@ -1,41 +1,26 @@
-<!doctype html>
-<html lang="zh-Hant">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>英文名稱修復工具</title>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
-        body { font-family: "Noto Sans TC", sans-serif; margin: 24px; background: #f7f7f7; color: #1f2937; }
-        .card { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 8px 24px rgba(0,0,0,0.08); margin-bottom: 20px; }
-        .title { font-size: 18px; font-weight: 700; margin-bottom: 16px; }
+<?= $this->extend('admin/_layout') ?>
+<?= $this->section('head_styles') ?>
+        .card { background: #fff; border-radius: 12px; padding: 24px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); margin-bottom: 20px; }
+        .title { font-size: 17px; font-weight: 700; margin-bottom: 16px; }
         table { width: 100%; border-collapse: collapse; }
         th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid #e5e7eb; font-size: 14px; }
         th { background: #f9fafb; font-weight: 600; }
-        .badge { display: inline-block; padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
-        .badge-warn  { background: #fef3c7; color: #92400e; }
-        .badge-ok    { background: #dcfce7; color: #166534; }
-        .badge-error { background: #fee2e2; color: #991b1b; }
+        .badge-warn  { background: #fef3c7; color: #92400e; border-radius: 9999px; padding: 3px 10px; font-size: 11px; font-weight: 700; display: inline-block; }
+        .badge-ok    { background: #dcfce7; color: #166534; border-radius: 9999px; padding: 3px 10px; font-size: 11px; font-weight: 700; display: inline-block; }
+        .badge-error { background: #fee2e2; color: #991b1b; border-radius: 9999px; padding: 3px 10px; font-size: 11px; font-weight: 700; display: inline-block; }
         .btn         { padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 600; }
         .btn-primary { background: #0f172a; color: #fff; }
         .btn-primary:hover { background: #1e293b; }
-        .btn-back    { background: #e5e7eb; color: #374151; text-decoration: none; padding: 10px 16px; border-radius: 8px; font-size: 14px; }
         .stat-row    { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
         .stat-box    { background: #f1f5f9; border-radius: 10px; padding: 16px 24px; min-width: 140px; }
         .stat-num    { font-size: 28px; font-weight: 700; }
         .stat-label  { font-size: 12px; color: #64748b; margin-top: 4px; }
         .diff-old    { color: #dc2626; text-decoration: line-through; font-size: 13px; }
         .diff-new    { color: #16a34a; font-size: 13px; }
-    </style>
-</head>
-<body>
-    <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
-        <h1 style="font-size: 24px; font-weight: 700;">🔧 英文名稱修復工具</h1>
-        <div style="display: flex; gap: 12px;">
-            <a href="/" class="btn-back">🏠 首頁</a>
-            <a href="/admin/api-keys" class="btn-back">🔑 API Keys</a>
-        </div>
-    </div>
+<?= $this->endSection() ?>
+<?= $this->section('page_title') ?><i class="fas fa-wrench mr-2"></i>英文名稱修覆工具<?= $this->endSection() ?>
+<?= $this->section('page_breadcrumbs') ?><a href="/" class="hover:text-blue-600">首頁</a><span class="mx-1">/</span><span>英文名稱修覆</span><?= $this->endSection() ?>
+<?= $this->section('content') ?>
 
     <!-- 說明 -->
     <div class="card">
@@ -139,6 +124,4 @@ function confirmRun() {
     });
 }
 </script>
-
-</body>
-</html>
+<?= $this->endSection() ?>

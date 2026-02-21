@@ -1,51 +1,39 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>執行詳情 - <?= substr($execution['execution_id'], 0, 8) ?></title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .status-badge {
-            @apply px-3 py-1 rounded-full text-xs font-semibold;
-        }
-        .status-running { @apply bg-blue-100 text-blue-800; }
-        .status-success { @apply bg-green-100 text-green-800; }
-        .status-failed { @apply bg-red-100 text-red-800; }
-        .status-partial { @apply bg-yellow-100 text-yellow-800; }
-        
-        .action-badge {
-            @apply px-2 py-1 rounded text-xs font-semibold;
-        }
-        .action-create { @apply bg-green-100 text-green-800; }
-        .action-update { @apply bg-blue-100 text-blue-800; }
-        .action-skip { @apply bg-gray-100 text-gray-800; }
-    </style>
-</head>
-<body class="bg-gray-50">
-    <div class="min-h-screen">
-        <!-- 頂部導航 -->
-        <nav class="bg-white shadow-sm border-b">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-16">
-                    <div class="flex items-center">
-                        <a href="/admin/execution-history" class="text-blue-600 hover:text-blue-800 mr-4">
-                            <i class="fas fa-arrow-left"></i>
-                        </a>
-                        <h1 class="text-2xl font-bold text-gray-900">
-                            <i class="fas fa-info-circle mr-2"></i>執行詳情
-                        </h1>
-                    </div>
-                    <?php if ($can_rollback): ?>
-                    <button onclick="document.getElementById('rollback-modal').classList.remove('hidden')"
-                            class="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg font-medium transition">
-                        <i class="fas fa-undo"></i> 退回此版本
-                    </button>
-                    <?php endif; ?>
-                </div>
-            </div>
-        </nav>
+<?= $this->extend('admin/_layout') ?>
+<?= $this->section('head_styles') ?>
+        .status-badge { display: inline-block; padding: 3px 10px; border-radius: 9999px; font-size: 11px; font-weight: 700; }
+        .status-running { background: #dbeafe; color: #1e40af; }
+        .status-success { background: #d1fae5; color: #065f46; }
+        .status-failed  { background: #fee2e2; color: #991b1b; }
+        .status-partial { background: #fef3c7; color: #92400e; }
+        .action-badge  { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; }
+        .action-create { background: #d1fae5; color: #065f46; }
+        .action-update { background: #dbeafe; color: #1e40af; }
+        .action-skip   { background: #f3f4f6; color: #374151; }
+<?= $this->endSection() ?>
+<?= $this->section('page_title') ?><i class="fas fa-info-circle mr-2"></i>執行詳情<?= $this->endSection() ?>
+<?= $this->section('page_breadcrumbs') ?><a href="/" class="hover:text-blue-600">首頁</a><span class="mx-1">/</span><a href="/admin/execution-history" class="hover:text-blue-600">執行歷史</a><span class="mx-1">/</span><span>詳情</span><?= $this->endSection() ?>
+<?= $this->section('header_actions') ?>
+<a href="/admin/execution-history"
+   class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg text-sm text-gray-700 hover:bg-gray-50 transition">
+    <i class="fas fa-arrow-left"></i> 返回列表
+</a>
+<?php if ($can_rollback): ?>
+<button onclick="document.getElementById('rollback-modal').classList.remove('hidden')"
+        class="flex items-center gap-2 bg-orange-500 hover:bg-orange-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition">
+    <i class="fas fa-undo"></i> 退回此版本
+</button>
+<?php endif; ?>
+<?= $this->endSection() ?>
+<?= $this->section('content') ?>
+<?php
+    $pageTitle   = '執行詳情';
+    $headerIcon  = 'fas fa-info-circle';
+    $breadcrumbs = [
+        ['label' => '首頁', 'url' => '/'],
+        ['label' => '執行歷史', 'url' => '/admin/execution-history'],
+        ['label' => '詳情'],
+    ];
+?>
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
@@ -316,5 +304,4 @@
     </div>
     <?php endif; ?>
 
-</body>
-</html>
+<?= $this->endSection() ?>

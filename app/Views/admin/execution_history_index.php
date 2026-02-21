@@ -1,46 +1,15 @@
-<!DOCTYPE html>
-<html lang="zh-TW">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>執行歷史記錄 - 管理後台</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        .status-badge {
-            @apply px-3 py-1 rounded-full text-xs font-semibold;
-        }
-        .status-running { @apply bg-blue-100 text-blue-800; }
-        .status-success { @apply bg-green-100 text-green-800; }
-        .status-failed { @apply bg-red-100 text-red-800; }
-        .status-partial { @apply bg-yellow-100 text-yellow-800; }
-    </style>
-</head>
-<body class="bg-gray-50">
-    <div class="min-h-screen">
-        <!-- 頂部導航 -->
-        <nav class="bg-white shadow-sm border-b">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-                <div class="flex justify-between h-16">
-                    <div class="flex items-center">
-                        <h1 class="text-2xl font-bold text-gray-900">
-                            <i class="fas fa-history mr-2"></i>執行歷史記錄
-                        </h1>
-                    </div>
-                    <div class="flex items-center space-x-4">
-                        <a href="/admin/api-keys" class="text-gray-600 hover:text-gray-900">
-                            <i class="fas fa-key mr-1"></i>API Keys
-                        </a>
-                        <a href="/admin/api-logs" class="text-gray-600 hover:text-gray-900">
-                            <i class="fas fa-file-alt mr-1"></i>API 日誌
-                        </a>
-                        <a href="/" class="text-gray-600 hover:text-gray-900">
-                            <i class="fas fa-home mr-1"></i>返回首頁
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </nav>
+<?= $this->extend('admin/_layout') ?>
+<?= $this->section('head_styles') ?>
+        .status-badge { display: inline-block; padding: 3px 10px; border-radius: 9999px; font-size: 11px; font-weight: 700; }
+        .status-running { background: #dbeafe; color: #1e40af; }
+        .status-success { background: #d1fae5; color: #065f46; }
+        .status-failed  { background: #fee2e2; color: #991b1b; }
+        .status-partial { background: #fef3c7; color: #92400e; }
+<?= $this->endSection() ?>
+<?= $this->section('page_title') ?><i class="fas fa-history mr-2"></i>執行歷史記錄<?= $this->endSection() ?>
+<?= $this->section('page_breadcrumbs') ?><a href="/" class="hover:text-blue-600">首頁</a><span class="mx-1">/</span><span>執行歷史記錄</span><?= $this->endSection() ?>
+<?= $this->section('content') ?>
+
 
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
 
@@ -282,6 +251,4 @@
                 <?php endif; ?>
             </div>
         </div>
-    </div>
-</body>
-</html>
+<?= $this->endSection() ?>

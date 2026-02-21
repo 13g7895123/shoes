@@ -1,11 +1,5 @@
-<!doctype html>
-<html lang="zh-Hant">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>API 使用記錄</title>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
+<?= $this->extend('admin/_layout') ?>
+<?= $this->section('head_styles') ?>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: "Noto Sans TC", "Microsoft JhengHei", sans-serif; background: #f5f7fa; color: #1f2937; }
         .container { max-width: 1400px; margin: 0 auto; padding: 24px; }
@@ -85,21 +79,10 @@
             .filter-group { width: 100%; }
             th, td { padding: 8px 6px; font-size: 12px; }
         }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <!-- 顶部导航 -->
-        <div class="top-nav">
-            <h1>📊 API 使用記錄</h1>
-            <div class="breadcrumb">
-                <a href="/">首頁</a>
-                <span>/</span>
-                <a href="/admin/api-keys">API Key 管理</a>
-                <span>/</span>
-                <span>使用記錄</span>
-            </div>
-        </div>
+<?= $this->endSection() ?>
+<?= $this->section('page_title') ?><i class="fas fa-file-alt mr-2"></i>API 使用記錄<?= $this->endSection() ?>
+<?= $this->section('page_breadcrumbs') ?><a href="/" class="hover:text-blue-600">首頁</a><span class="mx-1">/</span><a href="/admin/api-keys" class="hover:text-blue-600">API Key 管理</a><span class="mx-1">/</span><span>API 使用記錄</span><?= $this->endSection() ?>
+<?= $this->section('content') ?>
 
         <!-- 统计卡片 -->
         <div class="stats-grid">
@@ -357,5 +340,4 @@
             }
         }
     </script>
-</body>
-</html>
+<?= $this->endSection() ?>

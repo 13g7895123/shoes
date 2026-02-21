@@ -1,33 +1,19 @@
-<!doctype html>
-<html lang="zh-Hant">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>API Key 管理</title>
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <style>
-        body { font-family: "Noto Sans TC", sans-serif; margin: 24px; background: #f7f7f7; color: #1f2937; }
-        .card { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 8px 24px rgba(0,0,0,0.08); margin-bottom: 20px; }
-        .title { font-size: 20px; font-weight: 700; margin-bottom: 12px; }
+<?= $this->extend('admin/_layout') ?>
+<?= $this->section('head_styles') ?>
+        .card { background: #fff; border-radius: 12px; padding: 20px; box-shadow: 0 4px 16px rgba(0,0,0,0.06); margin-bottom: 20px; }
+        .title { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
         .row { display: flex; gap: 12px; flex-wrap: wrap; }
         label { display: block; font-size: 14px; margin-bottom: 6px; }
-        input, select { width: 240px; padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; }
-        button { padding: 10px 16px; border: none; border-radius: 8px; background: #0f172a; color: #fff; cursor: pointer; }
+        input, select { padding: 10px 12px; border: 1px solid #d1d5db; border-radius: 8px; font-size: 14px; }
+        button { padding: 10px 16px; border: none; border-radius: 8px; background: #0f172a; color: #fff; cursor: pointer; font-size: 14px; }
         table { width: 100%; border-collapse: collapse; }
         th, td { text-align: left; padding: 10px; border-bottom: 1px solid #e5e7eb; font-size: 14px; }
-        .badge { display: inline-block; padding: 4px 8px; border-radius: 999px; font-size: 12px; background: #e5e7eb; }
         .success { background: #dcfce7; color: #166534; }
         .error { background: #fee2e2; color: #991b1b; }
-    </style>
-</head>
-<body>
-    <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
-        <h1 style="font-size: 24px; font-weight: 700;">API Key 管理</h1>
-        <div style="display: flex; gap: 12px;">
-            <a href="/" style="padding: 10px 16px; background: #e5e7eb; color: #374151; text-decoration: none; border-radius: 8px; font-size: 14px;">🏠 首頁</a>
-            <a href="/admin/api-logs" style="padding: 10px 16px; background: #3b82f6; color: #fff; text-decoration: none; border-radius: 8px; font-size: 14px;">📊 查看使用記錄</a>
-        </div>
-    </div>
+<?= $this->endSection() ?>
+<?= $this->section('page_title') ?><i class="fas fa-key mr-2"></i>API Key 管理<?= $this->endSection() ?>
+<?= $this->section('page_breadcrumbs') ?><a href="/" class="hover:text-blue-600">首頁</a><span class="mx-1">/</span><span>API Key 管理</span><?= $this->endSection() ?>
+<?= $this->section('content') ?>
     <div class="card">
         <div class="title">建立 API Key</div>
         <?php if (session()->getFlashdata('error')): ?>
@@ -235,5 +221,4 @@
             }
         })();
     </script>
-</body>
-</html>
+<?= $this->endSection() ?>
