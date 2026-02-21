@@ -25,7 +25,7 @@ jobs:
           # docker compose exec -T php composer install --no-dev --optimize-autoloader
           
           # Optional: Run migrations
-          docker compose exec -T php php spark migrate
+          # docker compose exec -T php php spark migrate
           
           # Restart containers to apply changes (optional but recommended)
           # docker compose down
